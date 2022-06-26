@@ -25,7 +25,7 @@ public class Users
         return password;
     }
     String path = "C:\\Users\\thien\\IdeaProjects\\File_Share_security\\list\\ID_PASSWORD_list.csv";
-    boolean search_users(String users_id) throws FileNotFoundException
+    boolean search_users_only(String users_id) throws FileNotFoundException
     {
         Scanner sc = new Scanner(new File(path));
         sc.useDelimiter(",");
@@ -42,7 +42,33 @@ public class Users
         sc.close();
         return false;
     }
-    void change_password(String users_id)
+    boolean search_users(String users_id, String password) throws FileNotFoundException
+    {
+        Scanner sc = new Scanner(new File(path));
+        sc.useDelimiter(",");
+        sc.nextLine();
+        while(sc.hasNext())
+        {
+            String data = sc.next();
+            if(data.equals(users_id))
+            {
+                data = sc.next();
+                if(data.equals(password))
+                {
+                    return true;
+                }
+                else
+                {
+                    System.out.println("\nYour password is incorrect!");
+                    return false;
+                }
+            }
+            sc.nextLine();
+        }
+        sc.close();
+        return false;
+    }
+    void change_password(String users_id, String new_password, String old_password) throws FileNotFoundException
     {
 
     }
@@ -67,7 +93,7 @@ public class Users
         {
             System.out.print("Please enter your username: ");
             String Username = input.nextLine();
-            if (!search_users(Username)) {
+            if (!search_users_only(Username)) {
                 if (!check_id_rules(Username)) {
                     System.out.println("\nUsername must contain: \nLowercase letters. \nNumbers. \nFrom 6 to 14 characters. \n");
                 } else if (check_id_rules(Username)) {
