@@ -7,7 +7,15 @@ public class Keys {
     Hashing hash = new Hashing();
     private String real_key;
     private int random_times;
-
+    private String temp_path;
+    public void set_temp_path(String path)
+    {
+        temp_path = path;
+    }
+    public String getTemp_path()
+    {
+        return temp_path;
+    }
     public void set_times(int random_numbers)
     {
         random_times = random_numbers;
@@ -56,6 +64,7 @@ public class Keys {
             int times = get_random();
             String temp_path = hash.hash_public_key(real_key, times);
             File temp_Dir = new File(path + temp_path);
+            set_temp_path(path + temp_path);
             return temp_Dir.exists();
         }
         return false;

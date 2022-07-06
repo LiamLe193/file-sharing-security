@@ -2,7 +2,7 @@ import java.io.*;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
+import static java.lang.System.exit;
 //create new users
 public class Users
 {
@@ -53,6 +53,7 @@ public class Users
             if(data.equals(users_id))
             {
                 data = sc.next();
+                data = data.replaceAll("(\\r|\\n)", "");
                 if(data.equals(password))
                 {
                     return true;
@@ -82,7 +83,7 @@ public class Users
 
     boolean check_passwords_rules(String password)
     {
-        String regex = "^(?=.*[a-z])(?=.*[0-9])(?=\\S+$).{6,20}$";
+        String regex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=\\S+$).{6,20}$";
         Pattern p = Pattern.compile(regex);
         Matcher m = p.matcher(password);
         return m.matches();
@@ -91,11 +92,15 @@ public class Users
         Scanner input = new Scanner(System.in);
         while(true)
         {
-            System.out.print("Please enter your username: ");
+            System.out.print("Please enter your new username: ");
             String Username = input.nextLine();
+            if(Username.equals("1"))
+            {
+                exit(1);
+            }
             if (!search_users_only(Username)) {
                 if (!check_id_rules(Username)) {
-                    System.out.println("\nUsername must contain: \nLowercase letters. \nNumbers. \nFrom 6 to 14 characters. \n");
+                    System.out.println("\nUsername must contain at least :\nUppercase letters \nLowercase letters. \nNumbers. \nFrom 6 to 14 characters. \n");
                 } else if (check_id_rules(Username)) {
                     set_ID(Username);
                     break;
@@ -106,6 +111,10 @@ public class Users
         {
             System.out.print("\nPlease enter your password: ");
             String password = input.nextLine();
+            if(password.equals("1"))
+            {
+                exit(1);
+            }
             if(check_passwords_rules(password))
             {
                 System.out.println("\nYour account has successfully created");
