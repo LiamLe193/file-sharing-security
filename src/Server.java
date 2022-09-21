@@ -1,21 +1,14 @@
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Scanner;
 
 import static java.lang.System.exit;
 
-public class Server
-{
-    public final static int SOCKET_PORT = 1234;  // can be changed
-    public final static String file_path = "c:/temp/source.pdf";  // you may change this
+public class Server {
+    public final static String file_path = "c:/temp/source.pdf";  // change this
 
-    public static void main (String [] args ) throws IOException
-    {
+    public static void main(String[] args) throws IOException {
         //classes variable
         Users_Interface ui = new Users_Interface();
         Users user = new Users();
@@ -27,35 +20,34 @@ public class Server
         Socket sock = null;
 
         //should let the client connect first then appear the UI
-        try (ServerSocket server_sock = new ServerSocket(SOCKET_PORT)) {
-
+        System.out.println("Server Start...");
+        try (ServerSocket server_sock = new ServerSocket(80)) {
+            sock = server_sock.accept();
+            System.out.println("Client connected...");
+            DataInputStream dis = new DataInputStream(sock.getInputStream());
+            DataOutputStream dos = new DataOutputStream(sock.getOutputStream());
             while (true) {
-                ui.Welcome_message();
                 try {
                     //check if member then sign in
                     int attempt = 1;
-                    while(!ui.is_member())
+                    String type = dis.readUTF();
+                    if (type.equals("Register"))
                     {
+                        user.create_users(dos, dis);
+                    }
+                    else if (type.equals("Log_In"))
+                    {
+                        String ID = dis.readUTF();
+                        String password = dis.readUTF();
+                        if (user.search_users(ID, password))
                         {
-                            if(ui.is_create_users())
-                            {
-                                System.out.println("Please Sign in again");
-                                attempt--;
-                                if(attempt < 0)
-                                {
-                                    System.out.println("Attempts exist limits. Terminate the program now");
-                                    exit(1);
-                                }
-                            }
-                            else {
-                                System.out.println("unexpected error! Terminate the program now");
-                                exit(1);
-                            }
-                        }
+                            dos.writeUTF("Exist");
+                        } else dos.writeUTF("No");
                     }
                     System.out.println("Accepted connection : " + sock);
                     //user interface picks
-                    ui.users_pick();
+
+                    ui.users_pick(dos, dis);
                     // send file
                     File myFile = new File(file_path);
                     byte[] mybytearray = new byte[(int) myFile.length()];
@@ -70,8 +62,9 @@ public class Server
                 } finally {
                     if (bis != null) bis.close();
                     if (os != null) os.close();
-                    if (sock != null) sock.close();
+                    sock.close();
                 }
+
             }
         }
     }

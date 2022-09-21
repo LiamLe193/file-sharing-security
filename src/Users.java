@@ -2,12 +2,18 @@ import java.io.*;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import static java.lang.System.exit;
+
 //create new users
 public class Users
 {
+
     private String ID;
     private String password;
+    public Users()
+    {
+        ID = "";
+        password = "";
+    }
     public void set_ID(String ID)
     {
         this.ID = ID;
@@ -54,15 +60,8 @@ public class Users
             {
                 data = sc.next();
                 data = data.replaceAll("(\\r|\\n)", "");
-                if(data.equals(password))
-                {
-                    return true;
-                }
-                else
-                {
-                    System.out.println("\nYour password is incorrect!");
-                    return false;
-                }
+                //System.out.println("\nYour password is incorrect!");
+                return data.equals(password);
             }
             sc.nextLine();
         }
@@ -88,45 +87,23 @@ public class Users
         Matcher m = p.matcher(password);
         return m.matches();
     }
-    void create_users() throws IOException {
-        Scanner input = new Scanner(System.in);
-        while(true)
+    void create_users(DataOutputStream dos, DataInputStream dis) throws IOException {
+        System.out.println("Get to here");
+        String Username = dis.readUTF();
+        if(search_users_only(Username))
         {
-            System.out.print("Please enter your new username: ");
-            String Username = input.nextLine();
-            if(Username.equals("1"))
-            {
-                exit(1);
-            }
-            if (!search_users_only(Username)) {
-                if (!check_id_rules(Username)) {
-                    System.out.println("\nUsername must contain at least :\nUppercase letters \nLowercase letters. \nNumbers. \nFrom 6 to 14 characters. \n");
-                } else if (check_id_rules(Username)) {
-                    set_ID(Username);
-                    break;
-                }
-            } else System.out.println("\nYour username is already existed. \n");
+            dos.writeUTF("\nYour username is already existed. \n");
         }
-        while(true)
+        else
         {
-            System.out.print("\nPlease enter your password: ");
-            String password = input.nextLine();
-            if(password.equals("1"))
-            {
-                exit(1);
-            }
-            if(check_passwords_rules(password))
-            {
-                System.out.println("\nYour account has successfully created");
-                set_password(password);
-                break;
-            }
-            else System.out.println("\nYour password must contain: \nLowercase letters. \nNumbers. \nFrom 6 to 20 characters.\n");
+            set_ID(Username);
+            String password = dis.readUTF();
+            set_password(password);
+            FileWriter fw = new FileWriter(path,true);
+            BufferedWriter bw = new BufferedWriter(fw);
+            bw.write(getID() + "," + getPassword() + ",");
+            bw.newLine();
+            bw.close();
         }
-        FileWriter fw = new FileWriter(path,true);
-        BufferedWriter bw = new BufferedWriter(fw);
-        bw.write(getID() + "," + getPassword());
-        bw.newLine();
-        bw.close();
     }
 }
