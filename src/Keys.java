@@ -1,7 +1,9 @@
 import java.io.File;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
+/*
+This class is for create directories for upload or download interfaces
+ */
 public class Keys {
     String path = "C:\\Users\\thien\\IdeaProjects\\File_Share_security\\Files\\";
     Hashing hash = new Hashing();
@@ -69,5 +71,4 @@ public class Keys {
         }
         return false;
     }
-
 }

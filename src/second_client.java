@@ -8,7 +8,7 @@ import java.net.Socket;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class client extends JFrame{
+public class second_client extends JFrame{
     // driver function
 
     private final JLabel Username = new JLabel("Enter username: ");
@@ -49,7 +49,7 @@ public class client extends JFrame{
     private final Socket socket;
     private DataOutputStream dos;
     private DataInputStream dis;
-    public client() throws IOException {
+    public second_client() throws IOException {
         super("Secure Client");
 
         socket = new Socket("192.168.1.141", 80);
@@ -374,17 +374,17 @@ public class client extends JFrame{
         JPanel about_Panel = new JPanel();
         String text = """
                         My name is Liam Le.
-                        
+
                         This is my personal project.
-                        
+
                         The purpose of this program is
                         to prevent private data leaks by other parties.
-                        
+
                         This program help users exchange files through a
                         security server.
-                        
+
                         The data of the users is kept by server and encrypted.
-                        
+
                       """;
         JTextPane pane = new JTextPane();
         pane.setText(text);
